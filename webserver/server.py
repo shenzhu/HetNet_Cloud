@@ -23,7 +23,7 @@ app = Flask(__name__, template_folder=tmpl_dir)
 app.register_blueprint(routes)
 
 
-DATABASEURI = "postgresql://hetnet:hetnet123@hetnetpot.c8dtasexwftg.us-east-1.rds.amazonaws.com:5432/HetNet"
+DATABASEURI = "postgres://hetnet:hetnet123@hetpot.c8dtasexwftg.us-east-1.rds.amazonaws.com:5432/HetNet"
 
 engine = create_engine(DATABASEURI)
 
@@ -31,7 +31,7 @@ engine = create_engine(DATABASEURI)
 def before_request():
   try:
     g.conn = engine.connect()
-    
+
   except:
     print "uh oh, problem connecting to database"
     import traceback; traceback.print_exc()
