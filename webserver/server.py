@@ -16,6 +16,7 @@ from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
 from routes import *
 import command
+import time
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -30,10 +31,6 @@ engine = create_engine(DATABASEURI)
 def before_request():
   try:
     g.conn = engine.connect()
-    g.conn.execute("CREATE TABLE IF NOT EXISTS login (device_id text, password text NOT NULL, email text NOT NULL,PRIMARY KEY (device_id));");
-    g.conn.execute("CREATE TABLE IF NOT EXISTS networks (ssid text, bandwidth text NOT NULL, AvgSS integer NOT NULL,device_id text REFERENCES login, PRIMARY KEY (ssid,location));");
-
-
     
   except:
     print "uh oh, problem connecting to database"
