@@ -11,9 +11,9 @@ var mainController = function($scope,$http,$log,$window){
             method: "GET",
             params: {Email: $scope.myEmail, Password:$scope.myPassword}
     }).success(function(response) {
-      if (response == ""){$scope.failhider = false;}
+      if (response.status == "Failure"){$scope.failhider = false;}
       else{
-        $window.sessionStorage.setItem("PersonalInfo", JSON.stringify(response));
+        $window.sessionStorage.setItem("PersonalInfo", JSON.stringify({"Name": $scope.myEmail}));
         $window.location.href = '/home/main.html';
       }
     });
