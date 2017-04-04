@@ -4,7 +4,7 @@ from server import *
 import json
 from flask import request
 
-@routes.route('/testnetwork', methods=['POST'])
+@routes.route('/uploadnetwork', methods=['POST'])
 def upload_network_data():
     networkDataJSON = request.get_json()
 
@@ -26,14 +26,16 @@ def upload_network_data():
         # Insert to database
         networkCursor = g.conn.execute('INSERT INTO networks(ssid, bandwidth, security, location, avgss, device_id) VALUES(%s, %s, %s, %s, %s, %s)',
                                        ssid, bandwidth, security, location, avgss, device_id)
+        responseJSON = {"status": "Success"}
     else:
+        responseJSON = {"status": "Failure"}
         print "ERROR! No corresponding primary key"
 
 
-    return 'Hello World'
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
 
 
-@routes.route('/testlogin', methods = ['POST'])
+@routes.route('/uploadlogin', methods = ['POST'])
 def upload_login_data():
     loginDataJSON = request.get_json()
 
@@ -44,11 +46,12 @@ def upload_login_data():
 
     # Insert into database
     cursor = g.conn.execute('INSERT INTO login(device_id, password, email) VALUES(%s, %s, %s)', device_id, password, email)
+    responseJSON = {"status": "Success"}
 
-    return 'hello world'
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
 
 
-@routes.route('/testapplication', methods = ['POST'])
+@routes.route('/uploadapplication', methods = ['POST'])
 def upload_application_data():
     applicationDataJSON = request.get_json()
 
@@ -66,13 +69,15 @@ def upload_application_data():
     if len(loginRows) > 0:
         applicationCursor = g.conn.execute('INSERT INTO application(name, device_id) VALUES(%s, %s)',
                                             name, device_id)
+        responseJSON = {"status": "Success"}
     else:
+        responseJSON = {"status": "Failure"}
         print "ERROR! No corresponding primary key"
 
-    return "hello world"
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
 
 
-@routes.route('/testappdetl', methods = ['POST'])
+@routes.route('/uploadappdetl', methods = ['POST'])
 def upload_appdetl_data():
     appdetlDataJSON = request.get_json()
 
@@ -94,10 +99,12 @@ def upload_appdetl_data():
     if len(applicationRows) > 0:
         appdetlCursor = g.conn.execute('INSERT INTO appdetl(access_time, type, name, interval, value, device_id) VALUES(%s, %s, %s, %s, %s, %s)',
                                        access_time, type, name, interval, value, device_id)
+        responseJSON = {"status": "Success"}
     else:
+        responseJSON = {"status": "Failure"}
         print "ERROR! No corresponding primary key"
 
-    return 'Hello World'
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
 
 
 

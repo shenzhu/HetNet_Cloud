@@ -1,4 +1,4 @@
-from flask import render_template,Response
+from flask import render_template,Response, jsonify
 from . import routes
 from server import *
 import json
@@ -8,7 +8,28 @@ def another():
     return render_template("login_template.html")
 
 
+@routes.route('/login', methods=['POST'])
+def login():
+    loginDataJSON = request.get_json()
 
+    # Extract data from post JSON
+    email = loginDataJSON['Email']
+    password = loginDataJSON['Password']
+
+    # Check database
+    cursor = g.conn.execute('SELECT * FROM login WHERE email = %s AND password = %s', email, password)
+    resultRows = []
+    for row in cursor:
+        resultRows.append(row)
+
+    if len(resultRows) > 0:
+        responseJSON = {"status": "Success"}
+    else:
+        responseJSON = {"status": "Failure"}
+
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
+
+"""
 @routes.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -31,3 +52,4 @@ def login():
     json_data = json.dumps(passed_data)
     resp = Response(response=json_data,status=200, mimetype="application/json")
     return(resp)
+"""
