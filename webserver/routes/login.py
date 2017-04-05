@@ -13,8 +13,8 @@ def login():
     loginDataJSON = request.get_json()
 
     # Extract data from post JSON
-    email = loginDataJSON['Email']
-    password = loginDataJSON['Password']
+    email = loginDataJSON['email']
+    password = loginDataJSON['password']
 
     # Check database
     cursor = g.conn.execute('SELECT * FROM login WHERE email = %s AND password = %s', email, password)

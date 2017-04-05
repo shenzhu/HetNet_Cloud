@@ -107,6 +107,37 @@ def upload_appdetl_data():
     return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
 
 
+@routes.route('/register', methods=['POST'])
+def register_new_user():
+    userDataJSON = request.get_json()
+
+    # Extract name, email and password
+    name = userDataJSON['name']
+    password = userDataJSON['password']
+    email = userDataJSON['email']
+
+    print "EXECUTED"
+
+    # Check if email already exists
+    cursor = g.conn.execute('SELECT * FROM login WHERE email=%s', email)
+    results = []
+    for row in cursor:
+        results.append(row)
+
+    print results
+
+    device_id = 4
+    # Insert into database
+    if len(results) == 0:
+        g.conn.execute('INSERT INTO login(device_id, password, email) VALUES(%s, %s, %s)',
+                    device_id, password, email)
+        responseJSON = {"status": "Success"}
+    else:
+        responseJSON = {"status": "Failure"}
+        print "ERROR!"
+
+    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
+
 
 def table_name_extracter(name):
     cursor = g.conn.execute('SELECT column_name FROM information_schema.columns WHERE table_name= %s', name)
