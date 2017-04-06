@@ -55,13 +55,10 @@ var homeController = function($scope, $http, $window, httpService) {
 	$scope.networkInit = function() {
 
 		httpService.getnetworks().then(function (response) {
-			var list = response["data"]["networks"];
-            
-        }, 
-		function(response){
-			console.log(response);
-		}
-		);
+			$scope.networklist = response["data"];
+            }, function(response){console.log(response);});
+		
+		console.log($scope.networklist);
 
 		Highcharts.chart('barChart1', {
         	chart: {
