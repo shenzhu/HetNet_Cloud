@@ -1,6 +1,6 @@
 from flask import render_template,Response, jsonify
 from . import routes
-from server import *
+from application import *
 import json
 
 

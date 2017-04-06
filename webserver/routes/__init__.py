@@ -5,4 +5,4 @@ from .index import *
 from .login import *
 from .event import *
 from .network import *
-from .application import *
+from .appdata import *

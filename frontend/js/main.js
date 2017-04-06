@@ -59,6 +59,7 @@ var homeController = function($scope, $http, $window, httpService) {
 
 		var networkList = [];
 		httpService.getnetworks().then(function (response) {
+			console.log(response.data.networks);
 			for (var i = 0; i < response.data.networks.length; i++) {
 				var network = {
 					"ssid": response.data.networks[i].ssid,
@@ -79,6 +80,7 @@ var homeController = function($scope, $http, $window, httpService) {
 	$scope.applicationDataInit = function() {
 		var appdataList = [];
 		httpService.getappdata().then(function (response) {
+			console.log(response.data.appdata);
 			$scope.appdataList = response.data.appdata;
 		});
 	};

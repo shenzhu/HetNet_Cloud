@@ -1,6 +1,6 @@
 from flask import render_template,Response
 from . import routes
-from server import *
+from application import *
 import json
 
 

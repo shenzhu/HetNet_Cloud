@@ -1,6 +1,6 @@
 from flask import render_template,Response
 from . import routes
-from server import *
+from application import *
 import json
 
 
@@ -52,10 +52,17 @@ def upload_network():
 @routes.route('/getnetwork', methods=['GET'])
 def get_network():
 
-    location_param = "-73.9605,40.8067"
+    location_param = request.args.get('location')
+
+    if location_param == None:
+        location_param = "-73.9605,40.8067"
+
+    print "2"
+
     try:
         cursor_select = g.conn.execute('SELECT * FROM networks WHERE location = %s',
                                        location_param)
+        print "1"
 
         results = {}
         results["networks"] = []
@@ -75,6 +82,24 @@ def get_network():
 
         return Response(response=json.dumps(results), status=200, mimetype="application/json")
 
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/getlocations', methods=['GET'])
+def get_all_locations():
+
+    try:
+        location_list = []
+
+        cursor_select = g.conn.execute('SELECT DISTINCT location FROM networks')
+        for row in cursor_select:
+            location_list.append(row[0])
+
+        return Response(response=json.dumps(location_list), status=200, mimetype="application/json")
     except Exception as e:
         print e
 
