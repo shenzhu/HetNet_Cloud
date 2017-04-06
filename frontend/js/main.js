@@ -55,8 +55,8 @@ var homeController = function($scope, $http, $window, httpService) {
 	$scope.networkInit = function() {
 
 		httpService.getnetworks().then(function (response) {
-			console.log(response["data"]);
-            $scope.testinfo = response[0]["Time"];
+			var list = response["data"]["networks"];
+            
         }, 
 		function(response){
 			console.log(response);
@@ -89,7 +89,7 @@ var homeController = function($scope, $http, $window, httpService) {
 
     	Highcharts.chart('barChart2', {
         	chart: {
-            	type: 'bar'
+            	type: 'column'
         	},
         	title: {
 	            text: 'Distribution of Average Bandwidth in Mbit/s'
@@ -179,9 +179,10 @@ var httpService = function($http, $log){
             url: "http://maps.googleapis.com/maps/api/geocode/json",
             method: "GET",
             params:{latlng: Longtitude+","+Latitude}
-            }).success(function(response){
-            address=response["results"][0]["formatted_address"];
-            });
+		});
+		// .success(function(response){
+        //     address=response["results"][0]["formatted_address"];
+        //     });
     }
     this.getLatestlocation = function(myemail){
         return $http({
