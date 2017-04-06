@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream:frontend/js/main.js
-=======
+
 /// </// <reference path="angular.js" />
 var homeApp = angular.module("homeModule", []);
->>>>>>> Stashed changes:frontend/_site/static/js/main.js
 
 var preUrl = "127.0.0.1:8111"
 var homeApp = angular.module("homeModule", []);
