@@ -60,9 +60,9 @@ def get_network():
         for row in cursor_select:
             network = {
                 "ssid": row['ssid'],
-                "bandwidth": row['bandwidth'],
+                "bandwidth": int(row['bandwidth']),
                 "security": row['security'],
-                "avgss": row['avgss'],
+                "avgss": int(row['avgss']),
                 "device_id": row['device_id'],
                 "time": row['time']
             }
