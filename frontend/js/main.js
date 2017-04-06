@@ -52,7 +52,7 @@ var homeController = function($scope, $http, $window, httpService) {
 	};
 
 	// Init network visualization
-	$scope.networkInit = function() {
+	$scope.networkVisualizationInit = function() {
 
 		httpService.getnetworks().then(function (response) {
 			$scope.networklist = response["data"];
