@@ -5,52 +5,30 @@
 				Hover Data Table
 			</h3>
 		</div>
-
 		<div class="box-body">
-			<table id="example2" class="table table-bordered table-hover">
+			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th>Rendering engine</th>
-						<th>Brower</th>
-						<th>Platform(s)</th>
-						<th>Engine version</th>
-						<th>CSS grade</th>
+						<th>SSID</th>
+						<th>Bandwidth</th>
+						<th>Avgss</th>
+						<th>Location</th>
+						<th>Security</th>
+						<th>Device_id</th>
+						<th>Time</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody ng-repeat="network in networkList">
 					<tr>
-						<td>Trident</td>
-						<td>Internet Explorer 4.0</td>
-						<td>Win 95+</td>
-						<td> 4</td>
-						<td>X</td>
-					</tr>
-					<tr>
-						<td>Misc</td>
-						<td>PSP browser</td>
-						<td>PSP</td>
-						<td>-</td>
-						<td>C</td>
-					</tr>
-					<tr>
-						<td>Other browsers</td>
-						<td>All others</td>
-						<td>-</td>
-						<td>-</td>
-						<td>U</td>
+						<td>{{ network.ssid }}</td>
+						<td>{{ network.bandwidth }}</td>
+						<td>{{ network.avgss }}</td>
+						<td>{{ network.location }}</td>
+						<td>{{ network.security }}</td>
+						<td>{{ network.device_id }}</td>
+						<td>{{ network.time }}</td>
 					</tr>
 				</tbody>
-				<tfoot>
-					<tr>
-						<td>
-							<th>Rendering engine</th>
-							<th>Browser</th>
-							<th>Platform(s)</th>
-							<th>Engine version</th>
-							<th>CSS grade</th>
-						</td>
-					</tr>
-				</tfoot>
 			</table>
 		</div>
 	</div>
