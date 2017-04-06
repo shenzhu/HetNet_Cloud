@@ -2,9 +2,9 @@
 /// </// <reference path="angular.js" />
 var homeApp = angular.module("homeModule", []);
 
-var preUrl = "127.0.0.1:8111"
+var preUrl = "http://127.0.0.1:8111"
 var homeApp = angular.module("homeModule", []);
-var homeController = function($scope, $window) {
+var homeController = function($scope, $http, $window, httpService) {
 
 	var email = $window.sessionStorage.getItem("userEmail");
 	console.log(email);
@@ -53,6 +53,16 @@ var homeController = function($scope, $window) {
 
 	// Init network visualization
 	$scope.networkInit = function() {
+
+		httpService.getnetworks().then(function (response) {
+			console.log(response["data"]);
+            $scope.testinfo = response[0]["Time"];
+        }, 
+		function(response){
+			console.log(response);
+		}
+		);
+
 		Highcharts.chart('barChart1', {
         	chart: {
             	type: 'column'
