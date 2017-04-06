@@ -48,3 +48,22 @@ def upload_network():
     response_json = {"Status": "Success"}
     return Response(response=json.dumps(response_json), status=200, mimetype="application/json")
 
+
+@routes.route('/getnetwork', methods=['GET'])
+def get_network():
+
+    try:
+        cursor_select = g.conn.execute('SELECT * FROM networks')
+
+        results = []
+        for row in cursor_select:
+            network = [row['ssid'], row['bandwidth'], row['security'], row['location'], row['avgss'], row['device_id'], row['time']]
+            results.append(network)
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")

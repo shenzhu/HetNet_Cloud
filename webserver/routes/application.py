@@ -41,3 +41,31 @@ def upload_application():
 
     response_json = {"Status": "Success"}
     return Response(response=json.dumps(response_json), status=200, mimetype="application/json")
+
+
+@routes.route('/getappdata', methods=['GET'])
+def get_application():
+
+    try:
+        cursor_select = g.conn.execute('SELECT * FROM appdata')
+
+        results = []
+        for row in cursor_select:
+            uid = row['uid']
+            timestamp = row['timestamp']
+            download = row['download']
+            application_package = row['application_package']
+            upload = row['upload']
+            device_id = row['device_id']
+            time = row['time']
+
+            appdata = [int(uid), int(timestamp), float(download), application_package, float(upload), device_id, time]
+            results.append(appdata)
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
