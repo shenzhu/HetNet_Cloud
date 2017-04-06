@@ -52,21 +52,26 @@ def upload_network():
 @routes.route('/getnetwork', methods=['GET'])
 def get_network():
 
+    location_param = "-73.9605,40.8067"
     try:
-        cursor_select = g.conn.execute('SELECT * FROM networks')
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE location = %s',
+                                       location_param)
 
         results = {}
-        results['networks'] = []
+        results["networks"] = []
+        results["location"] = location_param
         for row in cursor_select:
             network = {
                 "ssid": row['ssid'],
                 "bandwidth": int(row['bandwidth']),
+                "location": row['location'],
                 "security": row['security'],
                 "avgss": int(row['avgss']),
                 "device_id": row['device_id'],
                 "time": row['time']
             }
-            results['networks'].append(network)
+
+            results["networks"].append(network)
 
         return Response(response=json.dumps(results), status=200, mimetype="application/json")
 
