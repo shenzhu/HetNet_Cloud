@@ -1,4 +1,3 @@
-
 *.pyc
 webserver/.idea
-frontend/**/_site/
+frontend/_site
