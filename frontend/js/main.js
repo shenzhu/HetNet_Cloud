@@ -4,8 +4,8 @@
 var homeApp = angular.module("homeModule", []);
 >>>>>>> Stashed changes:frontend/_site/static/js/main.js
 
+var preUrl = "127.0.0.1:8111"
 var homeApp = angular.module("homeModule", []);
-homeApp.controller("homeController", homeController);
 var homeController = function($scope, $window) {
 
 	var email = $window.sessionStorage.getItem("userEmail");
@@ -57,7 +57,7 @@ var homeController = function($scope, $window) {
 	$scope.networkInit = function() {
 		Highcharts.chart('barChart1', {
         	chart: {
-            	type: 'bar'
+            	type: 'column'
         	},
         	title: {
             	text: 'Distribution of Average Signal Strength in dB'
@@ -157,4 +157,47 @@ var homeController = function($scope, $window) {
 	};
 };
 
+var httpService = function($http, $log){
 
+    this.getnetworks = function(){
+        return $http({
+            url: preUrl + "/getnetwork",
+            method: "GET",
+        });
+    }
+	
+    this.getLocationParser = function(Longtitude, Latitude){
+       return $http({
+            url: "http://maps.googleapis.com/maps/api/geocode/json",
+            method: "GET",
+            params:{latlng: Longtitude+","+Latitude}
+            }).success(function(response){
+            address=response["results"][0]["formatted_address"];
+            });
+    }
+    this.getLatestlocation = function(myemail){
+        return $http({
+            url: preUrl + "/location",
+            method: "GET",
+            params:{Email : myemail, sort: '-Time', limit: 1}
+        });
+    }
+    this.getLatestnetwork = function(myemail){
+        return $http({
+            url: preUrl + "/network",
+            method: "GET",
+            params:{Email : myemail, sort: '-Time', limit: 1}
+        });
+    }
+    this.getLastestSystemInfo = function(myemail){
+        return $http({
+            url: preUrl + "/system",
+            method: "GET",
+            params:{Email : myemail, sort: '-Time', limit: 1}
+        });
+    }
+
+}
+
+homeApp.controller("homeController", homeController);
+homeApp.service("httpService", httpService);
