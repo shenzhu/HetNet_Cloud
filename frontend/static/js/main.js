@@ -1,11 +1,6 @@
-<<<<<<< Updated upstream:frontend/js/main.js
-=======
 /// </// <reference path="angular.js" />
 var homeApp = angular.module("homeModule", []);
->>>>>>> Stashed changes:frontend/_site/static/js/main.js
 
-var homeApp = angular.module("homeModule", []);
-homeApp.controller("homeController", homeController);
 var homeController = function($scope, $window) {
 
 	var email = $window.sessionStorage.getItem("userEmail");
@@ -157,4 +152,5 @@ var homeController = function($scope, $window) {
 	};
 };
 
+homeApp.controller("homeController", homeController);
 

@@ -49,7 +49,8 @@ def get_application():
     try:
         cursor_select = g.conn.execute('SELECT * FROM appdata')
 
-        results = []
+        results = {}
+        results['appdata'] = []
         for row in cursor_select:
             uid = row['uid']
             timestamp = row['timestamp']
@@ -59,8 +60,16 @@ def get_application():
             device_id = row['device_id']
             time = row['time']
 
-            appdata = [int(uid), int(timestamp), float(download), application_package, float(upload), device_id, time]
-            results.append(appdata)
+            appdata = {
+                "uid": int(uid),
+                "timestamp": float(timestamp),
+                "download": float(download),
+                "application_package": application_package,
+                "upload": float(upload),
+                "device_id": device_id,
+                "time": time
+            }
+            results['appdata'].append(appdata)
 
         return Response(response=json.dumps(results), status=200, mimetype="application/json")
 

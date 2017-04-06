@@ -55,10 +55,18 @@ def get_network():
     try:
         cursor_select = g.conn.execute('SELECT * FROM networks')
 
-        results = []
+        results = {}
+        results['networks'] = []
         for row in cursor_select:
-            network = [row['ssid'], row['bandwidth'], row['security'], row['location'], row['avgss'], row['device_id'], row['time']]
-            results.append(network)
+            network = {
+                "ssid": row['ssid'],
+                "bandwidth": row['bandwidth'],
+                "security": row['security'],
+                "avgss": row['avgss'],
+                "device_id": row['device_id'],
+                "time": row['time']
+            }
+            results['networks'].append(network)
 
         return Response(response=json.dumps(results), status=200, mimetype="application/json")
 
