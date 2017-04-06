@@ -3,59 +3,41 @@ from . import routes
 from server import *
 import json
 
-@routes.route('/uploadapplication', methods=['POST'])
-def upload_application_data():
-    applicationDataJSON = request.get_json()
+
+@routes.route('/appdata', methods=['POST'])
+def upload_application():
+    application_data = request.get_json()
 
     # Extract data from post json
-    name = applicationDataJSON['name']
-    device_id = applicationDataJSON['device_id']
+    applications = application_data["Applications"]
+    device_id = application_data["device_id"]
+    time = application_data["Time"]
 
-    # Check if foreign key exists
-    loginCursor = g.conn.execute('SELECT * FROM login WHERE device_id = %s', device_id)
-    loginRows = []
-    for row in loginCursor:
-        loginRows.append(row)
-
-    # Insert into database
-    if len(loginRows) > 0:
-        applicationCursor = g.conn.execute('INSERT INTO application(name, device_id) VALUES(%s, %s)',
-                                           name, device_id)
-        responseJSON = {"status": "Success"}
-    else:
-        responseJSON = {"status": "Failure"}
-        print "ERROR! No corresponding primary key"
-
-    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
-
-@routes.route('/uploadappdetl', methods=['POST'])
-def upload_appdetl_data():
-    appdetlDataJSON = request.get_json()
-
-    # Extract data from post json
-    access_time = appdetlDataJSON['access_time']
-    type = appdetlDataJSON['type']
-    name = appdetlDataJSON['name']
-    interval = appdetlDataJSON['interval']
-    value = appdetlDataJSON['value']
-    device_id = appdetlDataJSON['device_id']
-
-    # Check if name and device_id exists in application
-    applicationCursor = g.conn.execute('SELECT * FROM application WHERE name=%s, device_id=%s', name, device_id)
-    applicationRows = []
-    for row in applicationCursor:
-        applicationRows.append(row)
+    # Check if device_id in login table
+    login_cursor_select = g.conn.execute('SELECT * FROM login WHERE device_id = %s',
+                                         device_id)
+    if login_cursor_select.rowcount == 0:
+        g.conn.execute('INSERT INTO login(device_id, password, email) VALUES(%s, %s, %s)',
+                       device_id, "password", "email")
 
     # Insert into database
-    if len(applicationRows) > 0:
-        appdetlCursor = g.conn.execute(
-            'INSERT INTO appdetl(access_time, type, name, interval, value, device_id) VALUES(%s, %s, %s, %s, %s, %s)',
-            access_time, type, name, interval, value, device_id)
-        responseJSON = {"status": "Success"}
-    else:
-        responseJSON = {"status": "Failure"}
-        print "ERROR! No corresponding primary key"
+    try:
+        for application in applications:
 
-    return Response(response=json.dumps(responseJSON), status=200, mimetype="application/json")
-    
+            # Find if appliaction data already in database
+            cursor_select = g.conn.execute('SELECT * FROM appdata WHERE uid = %s AND device_id = %s',
+                                           application["uid"], device_id)
+            if cursor_select.rowcount == 0:
+                cursor_insert = g.conn.execute('INSERT INTO appdata(uid, timestamp, download, application_package, upload, device_id, time) VALUES(%s, %s, %s, %s, %s, %s, %s)',
+                                               application["uid"], application["time"], application["download"],
+                                               application["application_package"], application["upload"], device_id, time)
+            else:
+                pass
 
+    except Exception as e:
+        print e
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=400, mimetype="application/json")
+
+    response_json = {"Status": "Success"}
+    return Response(response=json.dumps(response_json), status=200, mimetype="application/json")
