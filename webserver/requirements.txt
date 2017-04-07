@@ -1,3 +1,4 @@
+pip>=9.0.1
 appdirs==1.4.3
 click==6.7
 Command==0.1.0
