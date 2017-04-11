@@ -2,7 +2,7 @@
 /// </// <reference path="angular.js" />
 var homeApp = angular.module("homeModule", []);
 
-var preUrl = "http://127.0.0.1:8111"
+var preUrl = "http://34.201.21.219:8111"
 var homeApp = angular.module("homeModule", []);
 var homeController = function($scope, $http, $window, httpService) {
 

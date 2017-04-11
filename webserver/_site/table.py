@@ -9,8 +9,6 @@ class table:
 	# Modifications to table
 	networkModify = "alter table networks add time text;"
 
-	alter table drop constraint appdata_pkey from appdata;
-	alter table add constraint appdata_pkey primary key(uid, device_id, time);
 	"""
 	psql \
    --host=hetpot.c8dtasexwftg.us-east-1.rds.amazonaws.com \

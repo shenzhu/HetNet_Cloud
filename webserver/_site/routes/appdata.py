@@ -25,8 +25,8 @@ def upload_application():
         for application in applications:
 
             # Find if appliaction data already in database
-            cursor_select = g.conn.execute('SELECT * FROM appdata WHERE uid = %s AND device_id = %s AND time = %s',
-                                           application["uid"], device_id, time)
+            cursor_select = g.conn.execute('SELECT * FROM appdata WHERE uid = %s AND device_id = %s',
+                                           application["uid"], device_id)
             if cursor_select.rowcount == 0:
                 cursor_insert = g.conn.execute('INSERT INTO appdata(uid, timestamp, download, application_package, upload, device_id, time) VALUES(%s, %s, %s, %s, %s, %s, %s)',
                                                application["uid"], application["time"], application["download"],
