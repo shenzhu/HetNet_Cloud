@@ -245,15 +245,17 @@ def get_avg_bandwidth_by_location():
         return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
 
 
-@routes.route('/network/bandwidth/getallavg/ssid', methods=['GET'])
-def get_all_avg_bandwidth_by_ssid():
+@routes.route('/network/bandwidth/byssid', methods=['GET'])
+def get_avg_bandwidth_by_ssid():
     """
-    get all average bandwidth by ssid
+    get the average bandwidth by ssid
     :return: {
-        ssid: avg_bandwidth,
-        ...
+        "avg_bandwidth": number,
+        "ssid": ssid_param
     }
     """
+    ssid_param = request.args.get('ssid')
+
     try:
 
         cursor_select = g.conn.execute('SELECT * FROM networks WHERE ssid = %s',
@@ -275,8 +277,6 @@ def get_all_avg_bandwidth_by_ssid():
 
         response_json = {"Status": "Failure"}
         return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
-
-
 
 
 @routes.route('/network/avgss/bylocation', methods=['GET'])
