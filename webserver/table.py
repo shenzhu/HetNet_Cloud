@@ -7,10 +7,11 @@ class table:
 	# Type indicate the CPU/Battery/DataUsage
 
 	# Modifications to table
+
 	networkModify = "alter table networks add time text;"
 
-	alter table drop constraint appdata_pkey from appdata;
-	alter table add constraint appdata_pkey primary key(uid, device_id, time);
+	appdata_drop_pk = "alter table drop constraint appdata_pkey from appdata;"
+	appdata_add_pk = "alter table add constraint appdata_pkey primary key(uid, device_id, time);"
 	"""
 	psql \
    --host=hetpot.c8dtasexwftg.us-east-1.rds.amazonaws.com \

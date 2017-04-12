@@ -49,20 +49,142 @@ def upload_network():
     return Response(response=json.dumps(response_json), status=200, mimetype="application/json")
 
 
-@routes.route('/getnetwork', methods=['GET'])
-def get_network():
+@routes.route('/network/getall', methods=['GET'])
+def get_all_network():
+    """
+    get all network
+    :return: {
+        "networks": []
+    }
+    """
+
+    try:
+        cursor_select = g.conn.execute('SELECT * FROM networks');
+
+        results = {}
+        results["networks"] = []
+
+        for row in cursor_select:
+            network = {
+                "ssid": row['ssid'],
+                "bandwidth": int(row['bandwidth']),
+                "location": row['location'],
+                "security": row['security'],
+                "avgss": int(row['avgss']),
+                "device_id": row['device_id'],
+                "time": row['time']
+            }
+
+            results["networks"].append(network)
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/network/bydeviceid', methods=['GET'])
+def get_network_by_device_id():
+    """
+    get network by device_id
+    :return: {
+        "networks": [],
+        "device_id": device_id_param
+    }
+    """
+
+    device_id_param = request.args.get('deviceid')
+
+    try:
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE device_id = %s',
+                                       device_id_param)
+
+        results = {}
+        results["networks"] = []
+        results["device_id"] = device_id_param
+
+        for row in cursor_select:
+            network = {
+                "ssid": row['ssid'],
+                "bandwidth": int(row['bandwidth']),
+                "location": row['location'],
+                "security": row['security'],
+                "avgss": int(row['avgss']),
+                "device_id": row['device_id'],
+                "time": row['time']
+            }
+
+            results["networks"].append(network)
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/network/byssid', methods=['GET'])
+def get_network_by_ssid():
+    """
+    get network by ssid
+    :return: {
+        "networks": [],
+        "ssid": ssid_param
+    }
+    """
+
+    ssid_param = request.args.get('ssid')
+
+    try:
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE ssid = %s',
+                                       ssid_param)
+
+        results = {}
+        results["networks"] = []
+        results["ssid"] = ssid_param
+
+        for row in cursor_select:
+            network = {
+                "ssid": row['ssid'],
+                "bandwidth": int(row['bandwidth']),
+                "location": row['location'],
+                "security": row['security'],
+                "avgss": int(row['avgss']),
+                "device_id": row['device_id'],
+                "time": row['time']
+            }
+
+            results["networks"].append(network)
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/network/bylocation', methods=['GET'])
+def get_network_by_location():
+    """
+    get network by location
+    :return: {
+        "networks": [],
+        "location": location_param
+    }
+    """
 
     location_param = request.args.get('location')
-
-    if location_param == None:
-        location_param = "-73.9605,40.8067"
-
-    print "2"
 
     try:
         cursor_select = g.conn.execute('SELECT * FROM networks WHERE location = %s',
                                        location_param)
-        print "1"
 
         results = {}
         results["networks"] = []
@@ -89,8 +211,153 @@ def get_network():
         return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
 
 
+@routes.route('/network/bandwidth/bylocation', methods=['GET'])
+def get_avg_bandwidth_by_location():
+    """
+    get the average bandwidth by location
+    :return: {
+        "avg_bandwidth": number,
+        "location": location_param
+    }
+    """
+    location_param = request.args.get('location')
+
+    try:
+
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE location = %s',
+                                       location_param)
+
+        bandwidth_sum = 0.0
+        for row in cursor_select:
+            bandwidth_sum += int(row['bandwidth'])
+
+        # Construct results
+        results = {}
+        results["avg_bandwidth"] = bandwidth_sum / cursor_select.rowcount
+        results["location"] = location_param
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/network/bandwidth/getallavg/ssid', methods=['GET'])
+def get_all_avg_bandwidth_by_ssid():
+    """
+    get all average bandwidth by ssid
+    :return: {
+        ssid: avg_bandwidth,
+        ...
+    }
+    """
+    try:
+
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE ssid = %s',
+                                       ssid_param)
+
+        bandwidth_sum = 0.0
+        for row in cursor_select:
+            bandwidth_sum += int(row['bandwidth'])
+
+        # Construct results
+        results = {}
+        results["avg_bandwidth"] = bandwidth_sum / cursor_select.rowcount
+        results["ssid"] = ssid_param
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+
+
+@routes.route('/network/avgss/bylocation', methods=['GET'])
+def get_avg_signal_strength_by_location():
+    """
+    get the average bandwidth by location
+    :return: {
+        "avg_signal_strength": number,
+        "location": location_param
+    }
+    """
+    location_param = request.args.get('location')
+
+    print location_param
+
+    try:
+
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE location = %s',
+                                       location_param)
+
+        avgss_sum = 0.0
+        for row in cursor_select:
+            avgss_sum += int(row['avgss'])
+
+        # Construct results
+        results = {}
+        results["avg_signal_strength"] = avgss_sum / cursor_select.rowcount
+        results["location"] = location_param
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
+@routes.route('/network/avgss/byssid', methods=['GET'])
+def get_avg_signal_strength_by_ssid():
+    """
+    get the average bandwidth by location
+    :return: {
+        "avg_signal_strength": number,
+        "location": location_param
+    }
+    """
+    ssid_param = request.args.get('ssid')
+
+    try:
+
+        cursor_select = g.conn.execute('SELECT * FROM networks WHERE ssid = %s',
+                                       ssid_param)
+
+        avgss_sum = 0.0
+        for row in cursor_select:
+            avgss_sum += int(row['avgss'])
+
+        # Construct results
+        results = {}
+        results["avg_signal_strength"] = avgss_sum / cursor_select.rowcount
+        results["ssid"] = ssid_param
+
+        return Response(response=json.dumps(results), status=200, mimetype="application/json")
+
+    except Exception as e:
+        print e
+
+        response_json = {"Status": "Failure"}
+        return Response(response=json.dumps(response_json), status=500, mimetype="application/json")
+
+
 @routes.route('/getlocations', methods=['GET'])
 def get_all_locations():
+    """
+    get all locations
+    :return: [
+        location,
+        ...
+    ]
+    """
 
     try:
         location_list = []
